@@ -6,6 +6,28 @@ Free and open source: no escrow, no obfuscation, no database, no webhooks, no au
 
 **Languages: English (default) and German**, set with `Config.Locale`. All texts are in `locales.lua`.
 
+Questions and bug reports: https://discord.gg/2cAK4XMzSe
+
+![Dream Notify: four toast notifications stacked in the top right corner, each with icon, title and progress bar](docs/toasts.png)
+
+| Announcement banner (`/announce`) | Your own colours and logo letters |
+|---|---|
+| ![A large announcement banner at the top of the screen, two toasts on the right](docs/announcement.png) | ![Blue colour, toasts at the bottom right, other logo letters, German texts](docs/theme.png) |
+
+The pictures are made with the included `preview.html` (drawn background, sample texts). They are not in-game recordings.
+
+## Install in 2 minutes
+
+1. Click **Code → Download ZIP** and unpack it. Name the folder `dream_notify` (GitHub adds `-main` to the name; remove that).
+2. Move the folder into the `resources` folder of your server.
+3. Add this line to your `server.cfg` (with ESX: below `ensure es_extended`):
+   ```
+   ensure dream_notify
+   ```
+4. Restart the server. In game, type `/notifytest`. Four toasts appear: it works.
+
+No database, no other resource needed. Settings (language, position, colours) are in `config.lua`; details below.
+
 ## Features
 
 - Toasts in four types: `info`, `success`, `warning`, `error`
@@ -26,7 +48,7 @@ Free and open source: no escrow, no obfuscation, no database, no webhooks, no au
 - None.
 - Optional: es_extended (ESX Legacy). With ESX, the groups in `Config.Announce.groups` may use `/announce`.
 
-## Installation
+## Installation (all steps)
 
 1. Put the folder `dream_notify` into your `resources` folder. Do not rename it.
 2. Add `ensure dream_notify` to your `server.cfg`. With ESX, put it after `es_extended`.
@@ -190,7 +212,9 @@ exports['dream_notify']:Notify(message, notifyType, length, title)
 
 ## Support
 
-Support via Discord.
+Questions, bug reports and ideas: https://discord.gg/2cAK4XMzSe
+
+Built with AI assistance.
 
 ---
 
@@ -228,4 +252,6 @@ Alle Exports, Events, Icons und Einstellungen stehen im englischen Teil oben. Di
 
 ## Support
 
-Support über Discord.
+Fragen und Fehlermeldungen: https://discord.gg/2cAK4XMzSe
+
+Mit KI-Unterstützung gebaut.
