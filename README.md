@@ -1,32 +1,59 @@
 # Dream Notify (free)
 
-A notification and announcement system for FiveM servers. Small toasts stack in a corner of the screen, each with an icon, a title and a progress bar. Admins can send a larger banner to all players with `/announce`.
+![Animated preview: four notifications slide in at the top right, then an announcement banner appears in the middle](docs/preview.gif)
 
-Free and open source: no escrow, no obfuscation, no database, no webhooks, no audio or image files. ESX Legacy is supported but not required.
+A notification and announcement system for roleplay servers. Small toasts stack in a corner of the screen, each with an icon, a title and a progress bar. Admins can send a larger banner to all players with `/announce`.
+
+Free, with the full source code: no escrow, no obfuscation, no database, no webhooks, no audio or image files. ESX Legacy is supported but not required.
 
 **Languages: English (default) and German**, set with `Config.Locale`. All texts are in `locales.lua`.
 
-Questions and bug reports: https://discord.gg/2cAK4XMzSe
+Trailer: https://youtu.be/-HtcchTnKsk · Questions and bug reports: https://discord.gg/2cAK4XMzSe
 
-![Dream Notify: four toast notifications stacked in the top right corner, each with icon, title and progress bar](docs/toasts.png)
+| Toasts | Announcement banner (`/announce`) | Your own colours and logo letters |
+|---|---|---|
+| ![Four toast notifications stacked in the top right corner, each with icon, title and progress bar](docs/toasts.png) | ![A large announcement banner at the top of the screen, two toasts on the right](docs/announcement.png) | ![Blue colour, toasts at the bottom right, other logo letters, German texts](docs/theme.png) |
 
-| Announcement banner (`/announce`) | Your own colours and logo letters |
-|---|---|
-| ![A large announcement banner at the top of the screen, two toasts on the right](docs/announcement.png) | ![Blue colour, toasts at the bottom right, other logo letters, German texts](docs/theme.png) |
+The animation and the pictures are made with the included `preview.html` (drawn background, sample texts). They are not in-game recordings.
 
-The pictures are made with the included `preview.html` (drawn background, sample texts). They are not in-game recordings.
+## Install in 3 steps
 
-## Install in 2 minutes
-
-1. Click **Code → Download ZIP** and unpack it. Name the folder `dream_notify` (GitHub adds `-main` to the name; remove that).
-2. Move the folder into the `resources` folder of your server.
-3. Add this line to your `server.cfg` (with ESX: below `ensure es_extended`):
+1. Click **Code → Download ZIP**, unpack it and name the folder `dream_notify` (GitHub adds `-main` to the name; remove that). Move the folder into the `resources` folder of your server.
+2. Add this line to your `server.cfg` (with ESX: below `ensure es_extended`):
    ```
    ensure dream_notify
    ```
-4. Restart the server. In game, type `/notifytest`. Four toasts appear: it works.
+3. Restart the server. In game, type `/notifytest`. Four toasts appear: it works.
 
 No database, no other resource needed. Settings (language, position, colours) are in `config.lua`; details below.
+
+## Complete example
+
+Copy this into the server side of your own resource. It sends a toast with every field and falls back to a chat line if Dream Notify is not running.
+
+```lua
+-- server side, in your own resource
+local function notifyPlayer(playerId, title, message, kind, icon)
+    if GetResourceState('dream_notify') ~= 'started' then
+        TriggerClientEvent('chat:addMessage', playerId, { args = { title, message } })
+        return false
+    end
+    return exports['dream_notify']:Notify(playerId, {
+        title    = title,
+        message  = message,
+        type     = kind or 'info',  -- 'info' | 'success' | 'warning' | 'error'
+        duration = 6000,            -- milliseconds
+        icon     = icon,            -- optional, see "Icons" below
+    })
+end
+
+-- inside one of your server events, for example after a salary payment:
+-- notifyPlayer(source, 'Paycheck', 'You received $1,250.', 'success', 'money')
+```
+
+`Notify` returns `true` when the toast was sent and `false` when the player is offline or the text is empty or invalid. All other exports and events are listed under "Usage" and "Exports and events".
+
+**Tested with:** Lua 5.4 against a mock of the server and client functions (45 server checks, 30 client checks including the ESX group check and the ESX override, all passed on 13 Nov 2026) and the interface in headless Chrome 153 (preview runs without errors). **Not yet run or measured on a live game server and not yet with a real ESX Legacy install.** If you run it, please tell us in Discord how it went.
 
 ## Features
 
@@ -198,7 +225,7 @@ exports['dream_notify']:Notify(message, notifyType, length, title)
 
 **Another script already uses `/announce`.** Change `Config.Announce.command`, for example to `dannounce`.
 
-**My announcement was cut at a semicolon.** FiveM splits chat commands at `;`. Use a comma or a dash instead.
+**My announcement was cut at a semicolon.** Chat commands are split at `;`. Use a comma or a dash instead.
 
 **I hear no sound.** Check `Config.Sound.enabled` and the volume. The sound is quiet on purpose.
 
@@ -220,9 +247,9 @@ Built with AI assistance.
 
 # Dream Notify (Deutsch, kostenlos)
 
-Benachrichtigungen und Ankündigungen für FiveM-Server. Kleine Meldungen stapeln sich in einer Bildschirmecke, mit Icon, Titel und Fortschrittsbalken. Admins schicken mit `/announce` ein größeres Banner an alle Spieler.
+Benachrichtigungen und Ankündigungen für Roleplay-Server. Kleine Meldungen stapeln sich in einer Bildschirmecke, mit Icon, Titel und Fortschrittsbalken. Admins schicken mit `/announce` ein größeres Banner an alle Spieler.
 
-Kostenlos und quelloffen: kein Escrow, keine Datenbank, keine Webhooks, keine Audio- oder Bilddateien. ESX Legacy wird unterstützt, ist aber nicht nötig.
+Kostenlos und mit vollem Quellcode: kein Escrow, keine Datenbank, keine Webhooks, keine Audio- oder Bilddateien. ESX Legacy wird unterstützt, ist aber nicht nötig.
 
 ## Installation
 
@@ -253,5 +280,7 @@ Alle Exports, Events, Icons und Einstellungen stehen im englischen Teil oben. Di
 ## Support
 
 Fragen und Fehlermeldungen: https://discord.gg/2cAK4XMzSe
+
+Getestet mit Lua 5.4 gegen einen Nachbau der Server- und Client-Funktionen und im Browser (Chrome 153). Noch nicht auf einem laufenden Server und noch nicht mit echtem ESX Legacy getestet.
 
 Mit KI-Unterstützung gebaut.
