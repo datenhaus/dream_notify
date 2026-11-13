@@ -1,0 +1,94 @@
+/* dream_notify · NUI styles
+   Theme variables are overwritten at runtime from Config.Theme / Config.Colors (see theme.js).
+   All sizes use rem; 1rem = 16px at 1080p and scales with the screen height. */
+:root{
+  --accent:#F5C400;--accent-rgb:245,196,0;--accent-ink:#111111;
+  --theme-bg:rgba(13,13,15,.92);--theme-text:#F4F2EA;--theme-text-rgb:244,242,234;
+  --c-info-rgb:var(--accent-rgb);--c-success-rgb:61,220,132;--c-warning-rgb:255,138,31;--c-error-rgb:255,77,77;
+  --scale:1;--mx:1.5rem;--my:1.5rem;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;font-size:clamp(10px,calc(1.4815vh * var(--scale)),34px)}
+html,body{width:100%;height:100%;overflow:hidden;background:transparent;pointer-events:none;
+  user-select:none;-webkit-user-select:none;
+  font-family:'Segoe UI','Inter','Roboto','Helvetica Neue',Arial,sans-serif;color:var(--theme-text)}
+
+/* ---------------------------------------------------------------- toast stack */
+#toasts{position:fixed;display:flex;flex-direction:column;gap:.6rem;width:22rem;max-width:calc(100vw - 2rem);z-index:10;--dx:2.5rem;--dy:0rem}
+#toasts.pos-top-right{top:var(--my);right:var(--mx)}
+#toasts.pos-top-left{top:var(--my);left:var(--mx);--dx:-2.5rem}
+#toasts.pos-top-center{top:var(--my);left:50%;margin-left:-11rem;--dx:0rem;--dy:-1.5rem}
+#toasts.pos-bottom-right{bottom:var(--my);right:var(--mx);flex-direction:column-reverse}
+#toasts.pos-bottom-left{bottom:var(--my);left:var(--mx);flex-direction:column-reverse;--dx:-2.5rem}
+#toasts.pos-bottom-center{bottom:var(--my);left:50%;margin-left:-11rem;flex-direction:column-reverse;--dx:0rem;--dy:1.5rem}
+
+.toast{position:relative;display:flex;align-items:flex-start;gap:.75rem;padding:.8rem .9rem 1rem .85rem;max-height:24rem;
+  background:var(--theme-bg);border:1px solid rgba(var(--theme-text-rgb),.08);border-left:.22rem solid rgb(var(--c));
+  border-radius:.65rem;box-shadow:0 .9rem 2.2rem rgba(0,0,0,.45);overflow:hidden;
+  animation:toast-in .38s cubic-bezier(.22,1,.36,1) both}
+.toast.t-info{--c:var(--c-info-rgb)}
+.toast.t-success{--c:var(--c-success-rgb)}
+.toast.t-warning{--c:var(--c-warning-rgb)}
+.toast.t-error{--c:var(--c-error-rgb)}
+.toast.out{animation:toast-out .28s ease-in both}
+@keyframes toast-in{from{opacity:0;transform:translate(var(--dx),var(--dy))}to{opacity:1;transform:translate(0,0)}}
+@keyframes toast-out{to{opacity:0;transform:translate(var(--dx),var(--dy))}}
+
+.t-ico{flex:0 0 2.2rem;width:2.2rem;height:2.2rem;border-radius:.55rem;display:flex;align-items:center;justify-content:center;
+  background:rgba(var(--c),.14);border:1px solid rgba(var(--c),.32);color:rgb(var(--c))}
+.t-ico svg{width:1.25rem;height:1.25rem;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.t-body{flex:1 1 auto;min-width:0;padding-top:.05rem}
+.t-title{font-size:.95rem;font-weight:700;line-height:1.2;letter-spacing:.02em;text-transform:uppercase;color:rgb(var(--c));
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t-msg{margin-top:.18rem;font-size:.92rem;font-weight:500;line-height:1.35;color:rgba(var(--theme-text-rgb),.92);
+  white-space:pre-line;overflow-wrap:anywhere;word-break:break-word;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:8;overflow:hidden}
+.t-title:empty,.t-msg:empty{display:none}
+.t-title:empty + .t-msg{margin-top:.35rem}
+.t-badge{flex:0 0 auto;min-width:1.5rem;height:1.5rem;padding:0 .3rem;border-radius:.4rem;display:flex;align-items:center;justify-content:center;
+  background:var(--accent);color:var(--accent-ink);font-size:.68rem;font-weight:800;letter-spacing:.02em;line-height:1;white-space:nowrap}
+.t-badge[data-n="1"]{font-size:.8rem}
+.t-badge[data-n="3"]{font-size:.58rem}
+.t-bar{position:absolute;left:0;right:0;bottom:0;height:.2rem;background:rgba(var(--theme-text-rgb),.07)}
+.t-bar i{display:block;height:100%;width:100%;background:rgb(var(--c));transform-origin:left center;
+  animation-name:bar-run;animation-timing-function:linear;animation-fill-mode:both}
+@keyframes bar-run{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+
+/* ---------------------------------------------------------------- announcement banner */
+#announce{position:fixed;left:0;right:0;top:6vh;display:flex;justify-content:center;z-index:20}
+#announce.pos-middle{top:0;bottom:0;align-items:center}
+.ann{position:relative;display:flex;align-items:flex-start;gap:1.15rem;width:46rem;max-width:calc(100vw - 3rem);padding:1.25rem 1.5rem 1.55rem 1.3rem;
+  background:var(--theme-bg);border:1px solid rgba(var(--accent-rgb),.35);border-top:.25rem solid var(--accent);border-radius:.95rem;
+  box-shadow:0 1.4rem 3.5rem rgba(0,0,0,.55),0 0 0 .35rem rgba(var(--accent-rgb),.06);overflow:hidden;
+  animation:ann-in .5s cubic-bezier(.22,1,.36,1) both}
+.ann.out{animation:ann-out .3s ease-in both}
+@keyframes ann-in{from{opacity:0;transform:translateY(-2rem) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes ann-out{to{opacity:0;transform:translateY(-1.5rem) scale(.98)}}
+.ann-badge{flex:0 0 4.2rem;width:4.2rem;height:4.2rem;border-radius:1rem;display:flex;align-items:center;justify-content:center;
+  background:var(--accent);color:var(--accent-ink);font-size:1.75rem;font-weight:800;letter-spacing:.01em;line-height:1;white-space:nowrap;
+  box-shadow:0 .5rem 1.4rem rgba(var(--accent-rgb),.28)}
+.ann-badge[data-n="1"]{font-size:2.2rem}
+.ann-badge[data-n="3"]{font-size:1.3rem}
+.ann-body{flex:1 1 auto;min-width:0}
+.ann-head{display:flex;align-items:center;gap:.5rem;color:var(--accent);font-size:.82rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;line-height:1.2}
+.ann-head svg{flex:0 0 1.05rem;width:1.05rem;height:1.05rem;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ann-head span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ann-head em{margin-left:auto;padding-left:1rem;font-style:normal;font-weight:600;letter-spacing:.06em;color:rgba(var(--theme-text-rgb),.5);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:50%}
+.ann-msg{margin-top:.45rem;font-size:1.5rem;font-weight:650;line-height:1.28;white-space:pre-line;overflow-wrap:anywhere;word-break:break-word;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:7;overflow:hidden}
+.ann-by{margin-top:.5rem;font-size:.85rem;font-weight:500;color:rgba(var(--theme-text-rgb),.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ann-by:empty{display:none}
+.ann .t-bar{height:.25rem}
+.ann .t-bar i{background:var(--accent)}
+
+/* ---------------------------------------------------------------- reduced motion
+   (Windows "show animations" off, or Config.ReducedMotion = true): no sliding, only a short fade. */
+@keyframes fade-in{from{opacity:0}to{opacity:1}}
+@keyframes fade-out{to{opacity:0}}
+.reduced .toast,.reduced .ann{animation:fade-in .15s linear both}
+.reduced .toast.out,.reduced .ann.out{animation:fade-out .12s linear both}
+@media (prefers-reduced-motion: reduce){
+  .toast,.ann{animation:fade-in .15s linear both}
+  .toast.out,.ann.out{animation:fade-out .12s linear both}
+}
