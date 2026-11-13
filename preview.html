@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dream_notify · Preview</title>
+<link rel="stylesheet" href="html/style.css">
+<style>
+  /* Preview only: a fake night scene behind the real NUI, plus a small control panel.
+     Open this file with a double click. Add ?shot=1 to the address to hide the panel for screenshots. */
+  html,body{pointer-events:auto;background:#07080b}
+  .scene{position:fixed;left:0;top:0;width:100%;height:100%;overflow:hidden;z-index:0;
+    background:linear-gradient(180deg,#0a0d18 0%,#141a2e 38%,#2a2440 62%,#3b2a3a 74%,#15131a 74.2%,#0a0a0d 100%)}
+  .scene svg{position:absolute;left:0;bottom:26%;width:100%;height:46%}
+  .scene .road{position:absolute;left:0;right:0;bottom:0;height:26%;
+    background:linear-gradient(180deg,#141318 0%,#0b0b0e 100%)}
+  .scene .road::before{content:'';position:absolute;left:0;right:0;top:46%;height:.35vh;
+    background:repeating-linear-gradient(90deg,rgba(245,196,0,.55) 0 5vw,transparent 5vw 10vw)}
+  .scene .glow{position:absolute;left:10%;right:10%;bottom:24%;height:22%;
+    background:radial-gradient(ellipse at center,rgba(255,150,90,.22),transparent 70%)}
+  .scene .map{position:absolute;left:1.6vw;bottom:2.6vh;width:14vw;height:19vh;border-radius:.6vh;
+    background:linear-gradient(135deg,#1c2430,#12161d);border:1px solid rgba(255,255,255,.12);opacity:.85}
+  .scene .map::before{content:'';position:absolute;left:10%;right:10%;top:48%;height:3px;background:rgba(255,255,255,.25);transform:rotate(-18deg)}
+  .scene .map::after{content:'';position:absolute;left:46%;top:44%;width:1.1vh;height:1.1vh;border-radius:50%;background:#fff}
+  .brand{position:fixed;left:1.8vw;top:3vh;z-index:5;font-family:'Segoe UI','Inter','Roboto',Arial,sans-serif;color:#F4F2EA}
+  .brand b{display:block;font-size:3.4vh;font-weight:800;letter-spacing:.04em}
+  .brand b i{font-style:normal;color:#F5C400}
+  .brand span{display:block;margin-top:.5vh;font-size:1.5vh;letter-spacing:.22em;text-transform:uppercase;color:rgba(244,242,234,.6)}
+  .panel{position:fixed;left:50%;bottom:3vh;transform:translateX(-50%);z-index:50;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;
+    max-width:92vw;padding:12px 14px;border-radius:12px;background:rgba(13,13,15,.92);border:1px solid rgba(255,255,255,.1);
+    font:600 13px 'Segoe UI',Arial,sans-serif;color:#F4F2EA}
+  .panel button,.panel select,.panel input{font:inherit;color:inherit;background:#1b1c20;border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:7px 10px;cursor:pointer}
+  .panel button:hover{border-color:#F5C400;color:#F5C400}
+  .panel input[type=color]{padding:2px;width:38px;height:32px}
+  .panel input[type=text]{width:58px;text-align:center;cursor:text}
+  .panel label{display:flex;align-items:center;gap:6px;color:rgba(244,242,234,.65)}
+  .shot .panel{display:none}
+  .nobrand .brand{display:none}
+</style>
+</head>
+<body>
+<div class="scene" aria-hidden="true">
+  <svg viewBox="0 0 1920 500" preserveAspectRatio="none">
+    <g fill="#0e1120">
+      <rect x="0" y="260" width="150" height="240"/><rect x="170" y="180" width="110" height="320"/><rect x="300" y="300" width="170" height="200"/>
+      <rect x="490" y="120" width="90" height="380"/><rect x="600" y="230" width="140" height="270"/><rect x="760" y="60" width="120" height="440"/>
+      <rect x="900" y="210" width="160" height="290"/><rect x="1080" y="140" width="100" height="360"/><rect x="1200" y="280" width="190" height="220"/>
+      <rect x="1410" y="100" width="110" height="400"/><rect x="1540" y="240" width="150" height="260"/><rect x="1710" y="170" width="210" height="330"/>
+    </g>
+    <g fill="#F5C400" opacity=".5">
+      <rect x="190" y="210" width="10" height="14"/><rect x="230" y="260" width="10" height="14"/><rect x="510" y="160" width="10" height="14"/>
+      <rect x="540" y="230" width="10" height="14"/><rect x="790" y="100" width="10" height="14"/><rect x="830" y="180" width="10" height="14"/>
+      <rect x="800" y="290" width="10" height="14"/><rect x="1100" y="190" width="10" height="14"/><rect x="1140" y="270" width="10" height="14"/>
+      <rect x="1430" y="150" width="10" height="14"/><rect x="1470" y="230" width="10" height="14"/><rect x="1750" y="220" width="10" height="14"/>
+      <rect x="1830" y="300" width="10" height="14"/><rect x="640" y="280" width="10" height="14"/><rect x="960" y="260" width="10" height="14"/>
+    </g>
+  </svg>
+  <div class="glow"></div>
+  <div class="road"></div>
+  <div class="map"></div>
+</div>
+<div class="brand"><b>DREAM <i>NOTIFY</i></b><span>Free notification &amp; announcement system</span></div>
+
+<div id="announce"></div>
+<div id="toasts" class="pos-top-right"></div>
+
+<div class="panel">
+  <button data-t="info">Info</button>
+  <button data-t="success">Success</button>
+  <button data-t="warning">Warning</button>
+  <button data-t="error">Error</button>
+  <button id="p-ann">Announcement</button>
+  <button id="p-many">Queue test (10)</button>
+  <button id="p-clear">Clear</button>
+  <label>Position
+    <select id="p-pos">
+      <option>top-right</option><option>top-left</option><option>top-center</option>
+      <option>bottom-right</option><option>bottom-left</option><option>bottom-center</option>
+    </select>
+  </label>
+  <label>Colour <input id="p-col" type="color" value="#F5C400"></label>
+  <label>Logo <input id="p-logo" type="text" maxlength="3" value="DS"></label>
+  <label><input id="p-sound" type="checkbox" checked> Sound</label>
+</div>
+
+<script src="html/theme.js"></script>
+<script src="html/app.js"></script>
+<script>
+/* Preview driver: sends the same messages to the page that client.lua sends in game. */
+(function () {
+  'use strict';
+  var q = new URLSearchParams(location.search);
+  if (q.get('shot')) document.documentElement.classList.add('shot');
+  if (q.get('brand') === '0') document.documentElement.classList.add('nobrand');
+  var state = { position: 'top-right', primary: '#F5C400', logo: 'DS', sound: true };
+  var SAMPLES = {
+    info: { title: 'City Hall', message: 'Your new ID card is ready for pickup.', type: 'info', duration: 7000 },
+    success: { title: 'Garage', message: 'Vehicle stored. Fuel 82 %, engine in good condition.', type: 'success', icon: 'car', duration: 7500 },
+    warning: { title: 'Weather', message: 'A storm is coming in. Drive carefully.', type: 'warning', duration: 8000 },
+    error: { title: 'Bank', message: 'Not enough money in your account.', type: 'error', icon: 'bank', duration: 8500 }
+  };
+  function send(m) { window.postMessage(m, '*'); }
+  function init() {
+    send({ action: 'init',
+      config: { position: state.position, offsetX: 24, offsetY: 24, scale: 1, maxVisible: 4, maxQueue: 30, sound: state.sound, volume: 0.25,
+        reducedMotion: false, showBadge: true, announcePosition: 'top', announceSound: true, colors: { info: '', success: '#3DDC84', warning: '#FF8A1F', error: '#FF4D4D' } },
+      theme: { primary: state.primary, background: 'rgba(13,13,15,0.92)', text: '#F4F2EA', logoText: state.logo, serverName: 'Your Server' },
+      texts: { announcement: 'Announcement', by: 'by %s' } });
+  }
+  window.DreamPreview = { send: send, init: init, state: state, samples: SAMPLES };
+  init();
+  Array.prototype.forEach.call(document.querySelectorAll('.panel button[data-t]'), function (b) {
+    b.addEventListener('click', function () { send({ action: 'notify', data: SAMPLES[b.getAttribute('data-t')] }); });
+  });
+  document.getElementById('p-ann').addEventListener('click', function () {
+    send({ action: 'announce', data: { message: 'Server restart in 10 minutes. Please park your vehicles and finish your deals.', sender: 'Admin Mia', duration: 10000 } });
+  });
+  document.getElementById('p-many').addEventListener('click', function () {
+    var types = ['info', 'success', 'warning', 'error'];
+    for (var i = 1; i <= 10; i++) send({ action: 'notify', data: { title: 'Queue test', message: 'Notification ' + i + ' of 10', type: types[i % 4], duration: 2500 } });
+  });
+  document.getElementById('p-clear').addEventListener('click', function () { send({ action: 'clear' }); });
+  document.getElementById('p-pos').addEventListener('change', function (e) { state.position = e.target.value; init(); });
+  document.getElementById('p-col').addEventListener('input', function (e) { state.primary = e.target.value; init(); });
+  document.getElementById('p-logo').addEventListener('input', function (e) { state.logo = e.target.value || 'DS'; init(); });
+  document.getElementById('p-sound').addEventListener('change', function (e) { state.sound = e.target.checked; init(); });
+  if (!q.get('shot')) setTimeout(function () { ['info', 'success', 'warning', 'error'].forEach(function (t, i) { setTimeout(function () { send({ action: 'notify', data: SAMPLES[t] }); }, i * 350); }); }, 300);
+})();
+</script>
+</body>
+</html>
